@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="Calc.cpp" />
     <ClCompile Include="ConsoleTest.cpp" />
+    <ClCompile Include="HashTable.cpp" />
     <ClCompile Include="Multiply.cpp" />
     <ClCompile Include="MyMath.cpp" />
     <ClCompile Include="simplearray.cpp" />
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calc.h" />
+    <ClInclude Include="HashTable.h" />
     <ClInclude Include="Multiply.h" />
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="simplearray.h" />

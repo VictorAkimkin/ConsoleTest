@@ -5,12 +5,12 @@
 #include <algorithm>
 #include <iomanip>
 #include "MyMath.h"
-
-//#include "simplearray.cpp"
 #include "simplearray.h"
+#include "HashTable.h"
 
 void rhombshaped_heritage();
 void operators_redefinition();
+void hashTable();
 int main()
 {
 	setlocale(LC_ALL, "Rus");
@@ -19,9 +19,13 @@ int main()
 	rhombshaped_heritage();
 	std::cout << "\nrhombshaped_heritage() end \n\n";
 	// 
-	// переопределение операторов шаблонного класса с динамическим массивом и переопределение 
+	// перегрузка операторов шаблонного класса с динамическим массивом и перегрузка ostream
 	operators_redefinition();
-	std::cout << "\noperators_redefinition() end\n";
+	std::cout << "\noperators_redefinition() end\n\n";
+	// 
+	// Хэш таблица 
+	hashTable();
+    std::cout << "\nhashTable() end\n\n";
 
 
 	std::cout << "\n\n"; system("pause");
@@ -93,4 +97,33 @@ void operators_redefinition()
 	std::cout << "c={5} =\n" << c;
 	std::cout << "\n";
 
+}
+
+void hashTable()
+{
+	HashTable ht(3);
+	auto data = {
+		std::make_pair("Коля Петров", "пекарь"),
+		std::make_pair("Оля Петрова", "актрисса"),
+		std::make_pair("Саша Петров", "пекарь"),
+		std::make_pair("Василий Конюхов", "менеджер"),
+		std::make_pair("Николай Рыбин", "грузчик"),
+		std::make_pair("Надежда Комарова", "водитель"),
+		std::make_pair("Василий Конюхов", "менеджер по продажам")
+	};
+
+
+	for (auto& elem : data)
+		if (!ht.addnew(elem.first, elem.second))
+			std::cout << ht.report() << "\n";
+
+	std::cout << "\n";
+	ht.print_table();
+	std::cout << "\n";
+
+	ht.erase("Саша Петров"); std::cout << ht.report() << "\n";
+	ht.erase("Саша Петров"); std::cout << ht.report() << "\n";
+
+	std::cout << "\n";
+	ht.print_table();
 }
