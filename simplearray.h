@@ -11,8 +11,7 @@ public:
 	explicit simplearray(int size);
 	explicit simplearray(std::initializer_list <T> L);
 	explicit simplearray(const simplearray <T>& other);
-	simplearray(simplearray <T>&& other);
-
+	explicit simplearray(simplearray <T>&& other);
 	~simplearray();
 
 	void clear();
@@ -31,16 +30,17 @@ public:
 
 private:
 	void initialize_by_initializer(const std::initializer_list <T>& L);
-	
 
 private:
 	T* arr{nullptr};
 	int size{0};
 };
+
 // ******************************************************************
 // ОПРЕДЕЛЕНИЯ МЕТОДОВ ШАБЛОННОГО КЛАССА МОЖНО ДЕЛАТЬ ТОЛЬКО В ХЭДЕРЕ 
 // (либо подключать в main cpp-файл вместо h-файла, что тоже выбивается из общего правила)
 // конструкторы и деструктор
+
 template<class T>
 simplearray<T> ::simplearray(int size) :arr(new T[size]), size(size)
 {
@@ -112,12 +112,12 @@ T& simplearray<T>::operator[](const int i)const
 }
 
 template<class T>
-simplearray<T> simplearray<T>::operator+(const simplearray<T>& other)
+simplearray<T> simplearray<T>::operator+(const simplearray<T>& other) 
 {
-	 simplearray <T> new_simplearray(size + other.getSize());
+	 simplearray <T>  new_simplearray  (size + other.getSize());
 	 memcpy(new_simplearray.arr, arr, size*sizeof(T));
 	 memcpy(new_simplearray.arr+ size, other.arr, other.getSize() * sizeof(T));
-	 return new_simplearray;
+	 return std::ref(new_simplearray);
 }
 
 template<class T>

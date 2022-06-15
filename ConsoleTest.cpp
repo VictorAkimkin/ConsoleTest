@@ -2,6 +2,8 @@
 //
 #pragma once
 #include <iostream>
+#include <algorithm>
+#include <iomanip>
 #include "MyMath.h"
 
 //#include "simplearray.cpp"
@@ -20,6 +22,7 @@ int main()
 	// переопределение операторов шаблонного класса с динамическим массивом и переопределение 
 	operators_redefinition();
 	std::cout << "\noperators_redefinition() end\n";
+
 
 	std::cout << "\n\n"; system("pause");
 }
@@ -85,4 +88,9 @@ void operators_redefinition()
 	c = (d + b);
 	std::cout << "c= (d + b) =\n" << c;
 	std::cout << "\n";
+
+	c = {5};
+	std::cout << "c={5} =\n" << c;
+	std::cout << "\n";
+
 }
