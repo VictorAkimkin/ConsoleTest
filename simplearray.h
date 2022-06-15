@@ -3,6 +3,7 @@
 #define simplearray_H_
 #include <iostream>
 
+
 template <class T>
 class simplearray
 {
@@ -32,8 +33,8 @@ private:
 	void initialize_by_initializer(const std::initializer_list <T>& L);
 
 private:
-	T* arr{nullptr};
-	int size{0};
+	T* arr{};// инициализация нулями
+	int size{};
 };
 
 // ******************************************************************
