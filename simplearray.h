@@ -131,7 +131,7 @@ simplearray<T>& simplearray<T>::operator=(const simplearray<T>& other)
 }
 
 template<class T>
-inline simplearray<T>& simplearray<T>::operator=(const std::initializer_list <T> L)
+simplearray<T>& simplearray<T>::operator=(const std::initializer_list <T> L)
 {
 	delete_arr();
 	initialize_by_initializer(L);
