@@ -2,8 +2,8 @@
 //
 #pragma once
 #include <iostream>
-#include <algorithm>
-#include <iomanip>
+
+
 #include "MyMath.h"
 #include "simplearray.h"
 #include "HashTable.h"
