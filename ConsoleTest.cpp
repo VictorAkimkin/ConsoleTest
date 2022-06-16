@@ -101,7 +101,7 @@ void operators_redefinition()
 
 void hashTable()
 {
-	HashTable ht(3);
+	HashTable ht(4);
 	auto data = {
 		std::make_pair("Коля Петров", "пекарь"),
 		std::make_pair("Оля Петрова", "актрисса"),

@@ -28,11 +28,11 @@ bool HashTable::erase(std::string client)
 	  if (itr->first == client)
 		{ 
 			itr = list.erase(itr);
-			last_operation_report= "Запись клиента [" + client + "] удалена.";
+			last_operation_report= "Запись клиента [" + client + "] удалена. Слот [" + std::to_string(index) + "]";
 			return true;
 		}
 	if (isEmpty())last_operation_report = "Таблица пустая. "; else last_operation_report = "Не удалось найти запись ";
-	last_operation_report += "Запись клиента [" + client +"] не удалена.";
+	last_operation_report += "Запись клиента [" + client +"] не удалена. Слот [" + std::to_string(index) + "]";
 	return false;
 }
 
@@ -45,11 +45,11 @@ bool HashTable::addnew(std::string client, std::string data)
 		if (itr->first == client)
 		{
 			itr->second=data;
-			last_operation_report = "Клиент [" + client+"] уже существует в базе. Данные записи обновлены";
+			last_operation_report = "Клиент [" + client+"] уже существует в базе. Данные записи обновлены. Слот ["+ std::to_string(index) +"]";
 			return false;
 		}
 	list.emplace_back(client,data);
-	last_operation_report = "Добавлена новая запись. Клиент ["+ client+"]";
+	last_operation_report = "Добавлена новая запись. Клиент ["+ client+"]  Слот["+ std::to_string(index) +"]";
 	return true;
 }
 
@@ -68,7 +68,7 @@ void HashTable::print_table()
 			{
 				std::string client= elem.first + " :";
 				if (client.length() < _CLT_NAME_STD_LEN) client.resize(_CLT_NAME_STD_LEN, ' ');
-				std::string out= client+"  [" + elem.second +"]"+"\n";
+				std::string out= client+"  [" + elem.second +"]"+" Слот["+ std::to_string(i) +"] \n";
 				std::cout<<out;
 			}
 		}

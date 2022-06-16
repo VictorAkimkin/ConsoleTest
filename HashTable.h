@@ -8,6 +8,10 @@ class HashTable
 {
 	public:
 	explicit HashTable(unsigned  int size);
+	HashTable(const HashTable& ) = delete;
+	HashTable(const HashTable&&) = delete;
+	void operator=(const HashTable&) = delete;
+	void operator=(const HashTable&&) = delete;
 	~HashTable();
 	// methods
 	bool isEmpty();
