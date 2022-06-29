@@ -13,19 +13,19 @@ void operators_redefinition();
 void hashTable();
 int main()
 {
-	setlocale(LC_ALL, "Rus");
-	//
-	// ромбовидное наследование: класс наследник от двух классов с общим предком
-	rhombshaped_heritage();
-	std::cout << "\nrhombshaped_heritage() end \n\n";
-	// 
+	//setlocale(LC_ALL, "Rus");
+	////
+	//// ромбовидное наследование: класс наследник от двух классов с общим предком
+	//rhombshaped_heritage();
+	//std::cout << "\nrhombshaped_heritage() end \n\n";
+	//// 
 	// перегрузка операторов шаблонного класса с динамическим массивом и перегрузка ostream
 	operators_redefinition();
 	std::cout << "\noperators_redefinition() end\n\n";
-	// 
-	// Хэш таблица 
-	hashTable();
-    std::cout << "\nhashTable() end\n\n";
+	//// 
+	//// Хэш таблица 
+	//hashTable();
+ //   std::cout << "\nhashTable() end\n\n";
 
 
 	std::cout << "\n\n"; system("pause");
@@ -62,12 +62,12 @@ void rhombshaped_heritage()
 void operators_redefinition()
 {
 	simplearray  <int> a(2);
-	a[0] = 2; a[1] = 4;
+	a[0] = 12; a[1] = 14;
 	std::cout << "a =\n" << a;
 	std::cout << "\n";
 
 	simplearray <int> b(4);
-	b[0] = 3; b[1] = 6; b[2] = 9; b[3] = 12;
+	b[0] = 23; b[1] = 26; b[2] = 29; b[3] = 22;
 	std::cout << "b =\n" << b;
 	std::cout << "\n";
 
@@ -81,7 +81,7 @@ void operators_redefinition()
 	d = a;
 	std::cout << "d = a =\n" << d;
 	std::cout << "\n";
-	d = { 0,1,2 };
+	d = { 30,31,32 };
 	std::cout << "d = {0,1,2} =\n" << d;
 	std::cout << "\n";
 

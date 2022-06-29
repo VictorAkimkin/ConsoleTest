@@ -1,8 +1,8 @@
 #pragma once
 #ifndef simplearray_H_
 #define simplearray_H_
-#include <iostream>
 
+#include <iostream>
 
 template <class T>
 class simplearray
@@ -11,8 +11,8 @@ class simplearray
 public:
 	explicit simplearray(int size);
 	explicit simplearray(std::initializer_list <T> L);
-	explicit simplearray(const simplearray <T>& other);
-	explicit simplearray(simplearray <T>&& other);
+	simplearray(const simplearray <T>& other);
+	simplearray(simplearray <T>&& other);
 	~simplearray();
 
 	void clear();
@@ -33,13 +33,13 @@ private:
 	void initialize_by_initializer(const std::initializer_list <T>& L);
 
 private:
-	T* arr{};// инициализация нулями
-	int size{};
+	T* arr;
+	int size;
 };
 
 // ******************************************************************
 // ОПРЕДЕЛЕНИЯ МЕТОДОВ ШАБЛОННОГО КЛАССА МОЖНО ДЕЛАТЬ ТОЛЬКО В ХЭДЕРЕ 
-// (либо подключать в main cpp-файл вместо h-файла, что тоже выбивается из общего правила)
+// (либо подключать в main cpp-файл вместо h-файла, что выбивается из общего правила)
 // конструкторы и деструктор
 
 template<class T>
@@ -57,7 +57,6 @@ simplearray<T>::simplearray(std::initializer_list<T> L)
 template<class T>
 simplearray<T>::simplearray(const simplearray <T>& other)
 {
-	delete_arr();
 	size = other.getSize();
 	arr = new T[size];
 	memcpy(arr, other.arr, sizeof(T) * size);
@@ -67,11 +66,8 @@ simplearray<T>::simplearray(const simplearray <T>& other)
 template<class T>
 simplearray<T>::simplearray(simplearray<T>&& other)
 {
-	delete_arr();
 	size = other.getSize();
-	arr = new T[size];
-	memcpy(arr, other.arr, sizeof(T) * size);
-	delete[] other.arr;
+	arr = other.arr;
 	other.arr = nullptr;
 }
 
@@ -91,11 +87,11 @@ void simplearray<T>::clear()
 template<class T>
 void simplearray<T>::delete_arr()
 {
-	if (arr) 
-	{ 
-		delete[] arr; 
-		arr = nullptr; 
-		size = 0; 
+	if (arr)
+	{
+		delete[] arr;
+		arr = nullptr;
+		size = 0;
 	}
 }
 
@@ -113,12 +109,12 @@ T& simplearray<T>::operator[](const int i)const
 }
 
 template<class T>
-simplearray<T> simplearray<T>::operator+(const simplearray<T>& other) 
+simplearray<T> simplearray<T>::operator+(const simplearray<T>& other)
 {
-	 simplearray <T>  new_simplearray  (size + other.getSize());
-	 memcpy(new_simplearray.arr, arr, size*sizeof(T));
-	 memcpy(new_simplearray.arr+ size, other.arr, other.getSize() * sizeof(T));
-	 return std::ref(new_simplearray);
+	simplearray <T> new_simplearray(size + other.getSize());
+	memcpy(new_simplearray.arr, arr, size * sizeof(T));
+	memcpy(new_simplearray.arr + size, other.arr, other.getSize() * sizeof(T));
+	return new_simplearray;
 }
 
 template<class T>
@@ -126,7 +122,7 @@ simplearray<T>& simplearray<T>::operator=(const simplearray<T>& other)
 {
 	delete_arr();
 	size = other.getSize();
-    arr = new T[size];
+	arr = new T[size];
 	memcpy(arr, other.arr, size * sizeof(T));
 	return *this;
 }
@@ -148,7 +144,6 @@ void simplearray<T>::initialize_by_initializer(const std::initializer_list<T>& L
 }
 
 #endif
-
 
 // перегрузка ostream
 template<class T>

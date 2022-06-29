@@ -1,1 +1,2 @@
-#include "simplearray.h"
+#pragma once
+
