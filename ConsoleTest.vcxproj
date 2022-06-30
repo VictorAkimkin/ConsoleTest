@@ -146,6 +146,7 @@
     <ClCompile Include="MyMath.cpp" />
     <ClCompile Include="simplearray.cpp" />
     <ClCompile Include="Sum.cpp" />
+    <ClCompile Include="VariadicTemplate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calc.h" />
@@ -154,6 +155,7 @@
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="simplearray.h" />
     <ClInclude Include="Sum.h" />
+    <ClInclude Include="VariadicTemplate.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

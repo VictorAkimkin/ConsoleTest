@@ -12,7 +12,7 @@ public:
 	explicit simplearray(int size);
 	explicit simplearray(std::initializer_list <T> L);
 	simplearray(const simplearray <T>& other);
-	simplearray(simplearray <T>&& other);
+	simplearray(simplearray <T>&& other)noexcept;
 	~simplearray();
 
 	void clear();
@@ -64,7 +64,7 @@ simplearray<T>::simplearray(const simplearray <T>& other)
 
 
 template<class T>
-simplearray<T>::simplearray(simplearray<T>&& other)
+simplearray<T>::simplearray(simplearray<T>&& other) noexcept
 {
 	size = other.getSize();
 	arr = other.arr;
@@ -147,7 +147,7 @@ void simplearray<T>::initialize_by_initializer(const std::initializer_list<T>& L
 
 // перегрузка ostream
 template<class T>
-std::ostream& operator<< (std::ostream& out, const simplearray <T>& sa)
+std::ostream& operator<< (std::ostream& out, const simplearray <T>& sa) 
 {
 	int i = 0;
 	int max = sa.getSize();

@@ -2,15 +2,20 @@
 //
 #pragma once
 #include <iostream>
+#include <tuple>
 
 
 #include "MyMath.h"
 #include "simplearray.h"
 #include "HashTable.h"
+#include "VariadicTemplate.h"
 
 void rhombshaped_heritage();
 void operators_redefinition();
 void hashTable();
+void variadic_template();
+
+
 int main()
 {
 	//setlocale(LC_ALL, "Rus");
@@ -20,12 +25,16 @@ int main()
 	//std::cout << "\nrhombshaped_heritage() end \n\n";
 	//// 
 	// перегрузка операторов шаблонного класса с динамическим массивом и перегрузка ostream
-	operators_redefinition();
-	std::cout << "\noperators_redefinition() end\n\n";
+	//operators_redefinition();
+	//std::cout << "\noperators_redefinition() end\n\n";
 	//// 
 	//// Хэш таблица 
 	//hashTable();
- //   std::cout << "\nhashTable() end\n\n";
+    //   std::cout << "\nhashTable() end\n\n";
+	//// 
+	//// Variadic template и кортежи
+	//variadic_template();
+	//std::cout << "\nvariadic_template() end\n\n";
 
 
 	std::cout << "\n\n"; system("pause");
@@ -58,7 +67,6 @@ void rhombshaped_heritage()
 	std::cout << "MyMath c2(4,5); c2.sumXY()= " << c2.sumXY();
 	std::cout << "\n";
 }
-
 void operators_redefinition()
 {
 	simplearray  <int> a(2);
@@ -96,9 +104,7 @@ void operators_redefinition()
 	c = {5};
 	std::cout << "c={5} =\n" << c;
 	std::cout << "\n";
-
 }
-
 void hashTable()
 {
 	HashTable ht(4);
@@ -126,4 +132,40 @@ void hashTable()
 
 	std::cout << "\n";
 	ht.print_table();
+	std::cout << "\n";
+}
+void variadic_template()
+{
+	auto arg1 = 'b';
+	auto arg2 = 2;
+	auto arg3 = 2.5;
+	auto arg4 = "std::tie";
+
+	auto ti = std::tie(arg1, arg2, arg3, arg4);
+	print_tuple(ti);
+	std::cout << '\n';
+
+	auto t = std::make_tuple('a', 1, 1.5, "std::make_tuple. many arguments");
+	print_tuple(t);
+	std::cout << '\n';
+
+	auto t2 = std::make_tuple("std::make_tuple. one argument");
+	print_tuple(t2);
+	std::cout << '\n';
+
+	auto t3 = std::make_tuple();
+	print_tuple(t3);
+	std::cout << '\n';
+
+	//std::apply([](auto &&... args) { my_func(args...); }, my_tuple);
+	auto arg5 = "variadic&. many arguments ";
+	print_tuple(arg1, arg2, arg3, arg5);
+	std::cout << '\n';
+	print_tuple('c', 3, 3.5, "variadic&&. many arguments");
+	std::cout << '\n';
+	print_tuple("variadic&&. one argument");
+	std::cout << '\n';
+	auto the_arg = "variadic&. one argument";
+	print_tuple(the_arg);
+	std::cout << '\n';
 }
