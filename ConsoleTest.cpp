@@ -15,7 +15,8 @@ void rhombshaped_heritage();
 void operators_redefinition();
 void hashTable();
 void variadic_template();
-void memory_allocation();
+void memory_allocation1();
+void memory_allocation2();
 struct A // класс для тестирования выделения памяти
 {
 	A() { std::cout << "Constructor A #" << ++counter << "\n"; }
@@ -30,26 +31,28 @@ int main()
 {
 	setlocale (LC_ALL, "Rus");
 
-	//
-	// ромбовидное наследование: класс наследник от двух классов с общим предком
-	rhombshaped_heritage();
-	std::cout << "rhombshaped_heritage() end \n\n";
-	// 
-	// перегрузка операторов шаблонного класса с динамическим массивом и перегрузка ostream
-	operators_redefinition();
-	std::cout << "operators_redefinition() end\n\n";
-	// 
-	// хэш таблица 
-	hashTable();
-	   std::cout << "hashTable() end\n\n";
-	// 
-	// вариативные шаблоны и кортежи
-	variadic_template();
-	std::cout << "variadic_template() end\n\n";
-	// 
-	// выделение и очищение памяти используя malloc realloc free new delete
-	memory_allocation();
-	std::cout << "memory_allocation() end\n\n";
+	////
+	//// ромбовидное наследование: класс наследник от двух классов с общим предком
+	//rhombshaped_heritage();
+	//std::cout << "rhombshaped_heritage() end \n\n";
+	//// 
+	//// перегрузка операторов шаблонного класса с динамическим массивом и перегрузка ostream
+	//operators_redefinition();
+	//std::cout << "operators_redefinition() end\n\n";
+	//// 
+	//// хэш таблица 
+	//hashTable();
+	//   std::cout << "hashTable() end\n\n";
+	//// 
+	//// вариативные шаблоны и кортежи
+	//variadic_template();
+	//std::cout << "variadic_template() end\n\n";
+	//// 
+	//// выделение и очищение памяти используя malloc realloc free new delete
+	//memory_allocation1();  
+	memory_allocation2();
+	//std::cout << "memory_allocation() end\n\n";
+
 
 	std::cout << "\n\n"; system("pause");
 }
@@ -183,19 +186,19 @@ void variadic_template()
 	print_tuple(the_arg);
 	std::cout << '\n';
 }
-void memory_allocation()
+void memory_allocation1()
 {
-	A** massA = (A**)malloc(sizeof(A*));
+	A* massA = (A*)malloc(sizeof(A));
 	assert(("malloc Error", massA));
-	massA[0] = new A;
+	new (massA) A;
 	std::function<void(int)> destructor = [&](int index) // объявляем как std::function для возможности рекурсии
 	{
 		if (!A::GetCounter() || index >= A::GetCounter()) return;
-		for (int i = A::GetCounter(); i > index; --i)
-			delete massA[i - 1];
+		for (int i = A::GetCounter() - 1; i >= index; --i)
+			(massA + i)->~A();
 		if (index)
 		{
-			A** tmpptr = (A**)realloc(massA, sizeof(A*) * index);
+			A* tmpptr = (A*)realloc(massA, sizeof(A) * index);
 			if (!tmpptr) { destructor(0); exit(1); }
 			massA = tmpptr;
 		}
@@ -204,9 +207,9 @@ void memory_allocation()
 	for (int i = 3; i; --i)
 	{
 		int size;
-		do 
+		do
 		{
-			std::cout << "Текущий размер массива объектов А = " << A::GetCounter() << ". Введите новый размер (от 1 до 5) массива объектов  А\n";
+			std::cout << "Текущий размер массива объектов А = " << A::GetCounter() << ".\n          Введите новый размер (от 1 до 5) массива объектов  А\n";
 			std::cin >> size;
 			if (!std::cin.good()) // защита от некорректного ввода
 			{
@@ -215,10 +218,10 @@ void memory_allocation()
 		} while (size < 1 || size > 5);
 		if (size > A::GetCounter())
 		{
-			A** tmpptr = (A**)realloc(massA, sizeof(A*) * size);
+			A* tmpptr = (A*)realloc(massA, sizeof(A) * size);
 			if (!tmpptr) { destructor(0); exit(1); }
 			massA = tmpptr;
-			for (int j = A::GetCounter(); j < size; ++j)	massA[j] = new A;
+			for (int j = A::GetCounter(); j < size; ++j) new (massA + j) A;
 		}
 		else
 		{
@@ -229,7 +232,62 @@ void memory_allocation()
 			else std::cout << "Новый размер массива объектов А равен текущему размеру. Перераспределение памяти не произведено\n\n";
 		}
 	}
-	std::cout << "\nОчищаем массив\n";
+	std::cout << "\nОчищаем память\n";
+	destructor(0);
+	std::cout << '\n';
+}
+void memory_allocation2()
+{
+	const int subMassSize = 5;
+	A** massA = (A**)malloc(sizeof(A*));
+	assert(("malloc Error", massA));
+	massA[0] = new A[subMassSize];
+	std::function<void(int)> destructor = [&](int index) // объявляем как std::function для возможности рекурсии
+	{
+		int mass_counter = A::GetCounter() / subMassSize;
+		if (!mass_counter || index >= mass_counter) return;
+		for (int i = mass_counter; i > index; --i)
+			delete[] massA[i - 1];
+		if (index)
+		{
+			A** tmpptr = (A**)realloc(massA, sizeof(A*) * index);
+			if (!tmpptr) { destructor(0); exit(1); }
+			massA = tmpptr;
+		}
+		else free(massA);
+	};
+	for (int i = 3; i; --i)
+	{
+		int mass_counter = A::GetCounter() / subMassSize;
+		int size;
+		do 
+		{
+			std::cout << "Текущий размер массива массивов объектов А = " << mass_counter
+				<<"\nОбщее количество объектов = " << A::GetCounter()
+				<< ".\n          Введите новый размер (от 1 до 5) массива массивов объектов  А\n";
+			std::cin >> size;
+			if (!std::cin.good()) // защита от некорректного ввода
+			{
+				std::cin.clear(); std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			}
+		} while (size < 1 || size > 5);
+		if (size > mass_counter)
+		{
+			A** tmpptr = (A**)realloc(massA, sizeof(A*) * size);
+			if (!tmpptr) { destructor(0); exit(1); }
+			massA = tmpptr;
+			for (int j = mass_counter; j < size; ++j)	massA[j] = new A[subMassSize];
+		}
+		else
+		{
+			if (size < mass_counter)
+			{
+				destructor(size);
+			}
+			else std::cout << "Новый размер массива объектов А равен текущему размеру. Перераспределение памяти не произведено\n\n";
+		}
+	}
+	std::cout << "\nОчищаем память\n";
 	destructor(0);
 	std::cout << '\n';
 }
