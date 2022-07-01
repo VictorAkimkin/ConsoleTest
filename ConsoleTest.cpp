@@ -3,7 +3,8 @@
 #pragma once
 #include <iostream>
 #include <tuple>
-
+#include <cassert>
+#include <functional>
 
 #include "MyMath.h"
 #include "simplearray.h"
@@ -14,28 +15,41 @@ void rhombshaped_heritage();
 void operators_redefinition();
 void hashTable();
 void variadic_template();
-
+void memory_allocation();
+struct A // класс для тестирования выделения памяти
+{
+	A() { std::cout << "Constructor A #" << ++counter << "\n"; }
+	~A() { std::cout << "Destructor  A #" << counter-- << "\n"; }
+	static size_t GetCounter() {return counter;}
+	private:
+	static size_t counter;
+};
+size_t A::counter{}; // инициализация статической переменной
 
 int main()
 {
-	//setlocale(LC_ALL, "Rus");
-	////
-	//// ромбовидное наследование: класс наследник от двух классов с общим предком
-	//rhombshaped_heritage();
-	//std::cout << "\nrhombshaped_heritage() end \n\n";
-	//// 
-	// перегрузка операторов шаблонного класса с динамическим массивом и перегрузка ostream
-	//operators_redefinition();
-	//std::cout << "\noperators_redefinition() end\n\n";
-	//// 
-	//// Хэш таблица 
-	//hashTable();
-    //   std::cout << "\nhashTable() end\n\n";
-	//// 
-	//// Variadic template и кортежи
-	//variadic_template();
-	//std::cout << "\nvariadic_template() end\n\n";
+	setlocale (LC_ALL, "Rus");
 
+	//
+	// ромбовидное наследование: класс наследник от двух классов с общим предком
+	rhombshaped_heritage();
+	std::cout << "rhombshaped_heritage() end \n\n";
+	// 
+	// перегрузка операторов шаблонного класса с динамическим массивом и перегрузка ostream
+	operators_redefinition();
+	std::cout << "operators_redefinition() end\n\n";
+	// 
+	// хэш таблица 
+	hashTable();
+	   std::cout << "hashTable() end\n\n";
+	// 
+	// вариативные шаблоны и кортежи
+	variadic_template();
+	std::cout << "variadic_template() end\n\n";
+	// 
+	// выделение и очищение памяти используя malloc realloc free new delete
+	memory_allocation();
+	std::cout << "memory_allocation() end\n\n";
 
 	std::cout << "\n\n"; system("pause");
 }
@@ -167,5 +181,55 @@ void variadic_template()
 	std::cout << '\n';
 	auto the_arg = "variadic&. one argument";
 	print_tuple(the_arg);
+	std::cout << '\n';
+}
+void memory_allocation()
+{
+	A** massA = (A**)malloc(sizeof(A*));
+	assert(("malloc Error", massA));
+	massA[0] = new A;
+	std::function<void(int)> destructor = [&](int index) // объявляем как std::function для возможности рекурсии
+	{
+		if (!A::GetCounter() || index >= A::GetCounter()) return;
+		for (int i = A::GetCounter(); i > index; --i)
+			delete massA[i - 1];
+		if (index)
+		{
+			A** tmpptr = (A**)realloc(massA, sizeof(A*) * index);
+			if (!tmpptr) { destructor(0); exit(1); }
+			massA = tmpptr;
+		}
+		else free(massA);
+	};
+	for (int i = 3; i; --i)
+	{
+		int size;
+		do 
+		{
+			std::cout << "Текущий размер массива объектов А = " << A::GetCounter() << ". Введите новый размер (от 1 до 5) массива объектов  А\n";
+			std::cin >> size;
+			if (!std::cin.good()) // защита от некорректного ввода
+			{
+				std::cin.clear(); std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			}
+		} while (size < 1 || size > 5);
+		if (size > A::GetCounter())
+		{
+			A** tmpptr = (A**)realloc(massA, sizeof(A*) * size);
+			if (!tmpptr) { destructor(0); exit(1); }
+			massA = tmpptr;
+			for (int j = A::GetCounter(); j < size; ++j)	massA[j] = new A;
+		}
+		else
+		{
+			if (size < A::GetCounter())
+			{
+				destructor(size);
+			}
+			else std::cout << "Новый размер массива объектов А равен текущему размеру. Перераспределение памяти не произведено\n\n";
+		}
+	}
+	std::cout << "\nОчищаем массив\n";
+	destructor(0);
 	std::cout << '\n';
 }

@@ -20,7 +20,7 @@ class HashTable
 	unsigned int size() const;
 	void print_table();
 	std::string report();
-private:
+	private:
 	// methods
 	unsigned long int _hash_function(std::string str);
 	// values
