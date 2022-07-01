@@ -48,7 +48,7 @@ int main()
 	//variadic_template();
 	//std::cout << "variadic_template() end\n\n";
 	//// 
-	//// выделение и очищение памяти используя malloc realloc free new delete
+	//// выделение и очищение памяти используя malloc realloc free new delete (два варианта работы)
 	//memory_allocation1();  
 	memory_allocation2();
 	//std::cout << "memory_allocation() end\n\n";
