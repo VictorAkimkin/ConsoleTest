@@ -10,7 +10,12 @@
 #include "simplearray.h"
 #include "HashTable.h"
 #include "VariadicTemplate.h"
+int global1;
+double  global2;
+extern int ei;
+int ei{};
 
+void initionalizer();
 void rhombshaped_heritage();
 void operators_redefinition();
 void hashTable();
@@ -25,12 +30,17 @@ struct A // класс для тестирования выделения пам
 	private:
 	static size_t counter;
 };
-size_t A::counter{}; // инициализация статической переменной
+size_t A::counter; // инициализация статического поля класса
+void swaping();
 
 int main()
 {
-	setlocale (LC_ALL, "Rus");
+	setlocale(LC_ALL, "Rus");
 
+	////
+	//// инициализация, виды инициализации нулем
+	// initionalizer();
+	//std::cout << "initionalizer() end\n\n";
 	////
 	//// ромбовидное наследование: класс наследник от двух классов с общим предком
 	//rhombshaped_heritage();
@@ -50,13 +60,67 @@ int main()
 	//// 
 	//// выделение и очищение памяти используя malloc realloc free new delete (два варианта работы)
 	//memory_allocation1();  
-	memory_allocation2();
+	//memory_allocation2();
 	//std::cout << "memory_allocation() end\n\n";
-
-
+	//// варианты смены значений переменных
+	// swaping();
+	// std::cout << "swaping() end\n\n";
 	std::cout << "\n\n"; system("pause");
 }
 
+void swaping()
+{
+	float a = 2.2, b = 3.3;
+	std::cout << "a = " << a << "       b = " << b << "\n";
+	std::swap(a, b); //1
+	std::cout << "a = " << a << "       b = " << b << "\n";
+	a += b; b = a - b; a -= b; //2
+	std::cout << "a = " << a << "       b = " << b << "\n";
+	std::tie(a, b) = std::make_tuple(b, a); //3
+	std::cout << "a = " << a << "       b = " << b << "\n";
+	decltype (a) tmp = std::move(a);//4
+	a = std::move(b);
+	b = std::move(tmp);
+	std::cout << "a = " << a << "       b = " << b << "\n";
+}
+void initionalizer() 
+{
+	struct st { int a; float b; char c; };
+	union un { int a; double b; char c; };
+	un u1; u1.a = 0;
+	un u2; u2.b = 0;
+	un u3; u3.c = 0;
+	st s1;// не инициализируется
+	// поля инициализируются нулями, там где не указано другое значение
+	st s2{};
+	st s3 = {};
+	st s4 = st();
+	st s5(5, '5');
+	st s6{ .b = 6.0 };//c++20
+	static int si;
+
+	thread_local double tld;
+	char ch[5] = "1";
+	int intmas[5] = { 1,2 };
+	std::string str; str.resize(5);
+	// ----------------------------------------------------------------
+	void (*fu)(un&, int) = [](un& u, int num) {std::cout << "  u" << num << ":  a= " << u.a << "  b= " << u.b << "  c= " << u.c << " \n"; };
+	fu(u1, 1); fu(u2, 2); fu(u3, 3);
+	auto f = [](st& s, int num) {std::cout << "  s" << num << ":  a= " << s.a << "  b= " << s.b << "  c= " << s.c << " \n"; };
+	f(s1, 1); f(s2, 2); f(s3, 3); f(s4, 4); f(s5, 5); f(s6, 6);
+	std::cout << "  global1 : " << global1 << " \n";
+	std::cout << "  global2 : " << global2 << " \n";
+	std::cout << "  static int si : " << si << " \n";
+	std::cout << "  extern int ei : " << ei << " \n";
+	std::cout << "  thread_local double tld : " << si << " \n";
+	for (int i{}; i < sizeof(ch); ++i)
+		std::cout << "  ch[" << i << "] = " << ch[i] << " \n";
+	for (int i{}; i < sizeof(intmas) / sizeof(int); ++i)
+		std::cout << "  intmas[" << i << "] = " << intmas[i] << " \n";
+
+	for (int i{}; i < str.size(); ++i)
+		std::cout << "  str[" << i << "] = " << str[i] << " \n";
+}
 void rhombshaped_heritage()
 {
 	Calc a;
