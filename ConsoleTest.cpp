@@ -5,6 +5,7 @@
 #include <tuple>
 #include <cassert>
 #include <functional>
+#include <algorithm>
 
 #include "MyMath.h"
 #include "simplearray.h"
@@ -32,6 +33,15 @@ struct A // класс для тестирования выделения пам
 };
 size_t A::counter; // инициализация статического поля класса
 void swaping();
+void remove_sort();
+
+template <class T>// перегрузка ostream << для vector
+std::ostream& operator<<(std::ostream& out, std::vector<T>& vec)
+{
+	for (auto &elem:vec) out << elem << "  ";
+	if (!vec.empty())out << std::endl;
+	return out;
+}
 
 int main()
 {
@@ -65,24 +75,15 @@ int main()
 	//// варианты смены значений переменных
 	// swaping();
 	// std::cout << "swaping() end\n\n";
+	//// 
+	//// сортировка и удаление элементов контейнера
+	// remove_sort();
+	// std::cout << "remove_sort() end\n\n";
+	
+
 	std::cout << "\n\n"; system("pause");
 }
 
-void swaping()
-{
-	float a = 2.2, b = 3.3;
-	std::cout << "a = " << a << "       b = " << b << "\n";
-	std::swap(a, b); //1
-	std::cout << "a = " << a << "       b = " << b << "\n";
-	a += b; b = a - b; a -= b; //2
-	std::cout << "a = " << a << "       b = " << b << "\n";
-	std::tie(a, b) = std::make_tuple(b, a); //3
-	std::cout << "a = " << a << "       b = " << b << "\n";
-	decltype (a) tmp = std::move(a);//4
-	a = std::move(b);
-	b = std::move(tmp);
-	std::cout << "a = " << a << "       b = " << b << "\n";
-}
 void initionalizer() 
 {
 	struct st { int a; float b; char c; };
@@ -354,4 +355,49 @@ void memory_allocation2()
 	std::cout << "\nОчищаем память\n";
 	destructor(0);
 	std::cout << '\n';
+}
+void swaping()
+{
+	float a = 2.2, b = 3.3;
+	std::cout << "a = " << a << "       b = " << b << "\n";
+	std::swap(a, b); //1
+	std::cout << "a = " << a << "       b = " << b << "\n";
+	a += b; b = a - b; a -= b; //2
+	std::cout << "a = " << a << "       b = " << b << "\n";
+	std::tie(a, b) = std::make_tuple(b, a); //3
+	std::cout << "a = " << a << "       b = " << b << "\n";
+	decltype (a) tmp = std::move(a);//4
+	a = std::move(b);
+	b = std::move(tmp);
+	std::cout << "a = " << a << "       b = " << b << "\n";
+}
+void remove_sort()
+{
+	std::vector <int> v = { 35,46,4,1,32,43,5,24,34 };
+	std::cout << " original___________________\n" << v; // ostream << перегружен для vector
+	std::qsort(v.data(), v.size(), sizeof(int), [](const void* it1, const void* it2) {
+		if ((*static_cast<const int*>(it1)) < (*static_cast<const int*>(it2))) return -1;
+		return static_cast<int> ((*static_cast<const int*>(it1)) > (*static_cast<const int*>(it2))); });
+	std::cout << "std::qsort < ______________ \n" << v;
+	std::qsort(v.data(), v.size(), sizeof(int), [](const void* it1, const void* it2) {
+		auto res = (*static_cast<const int*>(it1)) <=> (*static_cast<const int*>(it2));
+		if (res > 0) return -1;
+		return static_cast<int> (res < 0); });
+	std::cout << "std::qsort > _______________\n" << v;
+	// #include <algorithm>
+	std::sort(v.begin(), v.end());
+	std::cout << "std::sort___________________\n" << v;
+	std::sort(v.begin(), v.end(), std::greater<>());
+	std::cout << "std::sort std::greater<>()__\n" << v;
+	std::sort(v.begin(), v.end(), std::less<>());
+	std::cout << "std::sort std::less<>()_____\n" << v;
+	std::cout << "\n\n";
+	std::vector <int> v2 = { 35,46,4,1,32,43,5,24,34 };
+	std::cout << " original___________________\n" << v2; // ostream << перегружен для vector
+	auto it = std::remove_if(v2.begin(), v2.end(), [](int elem) {return (elem > 24 && elem < 45); });
+	v2.erase(it, v2.end());
+	std::cout << "std::remove_if___24> x <45___\n" << v2;
+	it = std::remove(v2.begin(), v2.end(), 24); v2.erase(it, v2.end());
+	v2.erase(std::remove(v2.begin(), v2.end(), 46), v2.end());
+	std::cout << "std::remove________24,46____\n" << v2;
 }
