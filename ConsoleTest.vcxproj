@@ -141,20 +141,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Calc.cpp" />
     <ClCompile Include="ConsoleTest.cpp" />
     <ClCompile Include="HashTable.cpp" />
-    <ClCompile Include="Multiply.cpp" />
-    <ClCompile Include="MyMath.cpp" />
-    <ClCompile Include="simplearray.cpp" />
-    <ClCompile Include="Sum.cpp" />
-    <ClCompile Include="VariadicTemplate.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="atomic_demo.h" />
     <ClInclude Include="Calc.h" />
+    <ClInclude Include="futureAsync.h" />
     <ClInclude Include="HashTable.h" />
+    <ClInclude Include="Header.h" />
+    <ClInclude Include="Islands.h" />
+    <ClInclude Include="MazeGuide.h" />
     <ClInclude Include="Multiply.h" />
+    <ClInclude Include="mutex_demo.h" />
     <ClInclude Include="MyMath.h" />
+    <ClInclude Include="OnTimer.h" />
+    <ClInclude Include="property.h" />
     <ClInclude Include="simplearray.h" />
     <ClInclude Include="Sum.h" />
     <ClInclude Include="VariadicTemplate.h" />

@@ -27,7 +27,7 @@ protected:
 	}
 
 public:
-	~Calc() {}// = delete;
+	virtual ~Calc() { std::cout << "Деструктор Calc \n"; }
 
 };
 

@@ -10,7 +10,7 @@ public:
 	int Result() { return GetX() * GetY(); }
 
 public:
-	~Multiply() {}
+	~Multiply() { std::cout << "Деструктор Multiply\n"; }
 
 };
 

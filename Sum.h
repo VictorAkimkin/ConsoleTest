@@ -10,6 +10,6 @@ public:
 	int Result() { return GetX() + GetY(); }
 
 public:
-	~Sum() {}
+	~Sum() { std::cout << "Деструктор Sum\n"; }
 };
 
