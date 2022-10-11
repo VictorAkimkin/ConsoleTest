@@ -114,8 +114,8 @@ int main()
 	//// поиск выхода в лабиринте
 	// mazeGuide();
 	//cout << "islands() end\n\n";
-	//// поиск выхода в лабиринте
-	 GetSetProperty();
+	//// демонстрация property
+	// GetSetProperty();
 	//cout << "GetSetProperty() end\n\n";
         
 	cout << "\n\n"; system("pause");

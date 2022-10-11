@@ -2,6 +2,7 @@
 class Proper {
     int field;
     int mass[2][2];
+
 public:
     void set_field(int val) {
         field = val;
