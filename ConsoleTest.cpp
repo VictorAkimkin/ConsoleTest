@@ -39,6 +39,7 @@ void initionalizer();
 void thread_local_variable();
 void rhombshaped_heritage();
 void rhombshaped_heritage_callordering();
+void sizeof_class();
 void operators_redefinition();
 void hashTable();
 void variadic_template();
@@ -62,7 +63,7 @@ int main()
 	// initionalizer();
 	// cout << "initionalizer() end\n\n";
 	////
-    //// thread_local поведение
+	//// thread_local поведение
 	// thread_local_variable();
 	 // cout << "thread_local_variable() end\n\n";
 	 ////
@@ -70,6 +71,10 @@ int main()
 	//rhombshaped_heritage();
 	//rhombshaped_heritage_callordering();//порядок вызова конструкторов/деструкторов и обязательность вирульаного деструктора
 	// cout << "rhombshaped_heritage() end \n\n";
+	//// 
+	//// размеры экземпларов класса в зависимости от порядка полей класса
+	//sizeof_class();
+	// cout << "sizeof_class() end \n\n";
 	//// 
 	//// перегрузка операторов шаблонного класса с динамическим массивом и перегрузка ostream
 	//operators_redefinition();
@@ -117,12 +122,17 @@ int main()
 	//// демонстрация property
 	// GetSetProperty();
 	//cout << "GetSetProperty() end\n\n";
-        
+
+	//std::map<bool, int> mb = { {1,2},{3,4},{5,0} };
+	//cout << mb.size()<< "   "<< sizeof (mb) << endl;
+	//std::map<int, int> mi = { {1,2},{3,4},{5,0} };
+	//cout << mi.size() << "   " << sizeof(mi) << endl;
+
 	cout << "\n\n"; system("pause");
 }
 void initionalizer()
 {
-	struct st {int a; float b; char c; };
+	struct st { int a; float b; char c; };
 	union un { int a; double b; char c; };
 	un u1; u1.a = 0;
 	un u2; u2.b = 0;
@@ -198,8 +208,54 @@ void rhombshaped_heritage()
 void rhombshaped_heritage_callordering()
 {
 	// виртуальный деструктор базового класса обязателен при использоваии указателя на базывый класс хранящий объект потомка
-	Calc *c1= new MyMath(2, 3);       std::cout << "\n\n\n";
-	delete c1; 
+	Calc* c1 = new MyMath(2, 3);       std::cout << "\n\n\n";
+	delete c1;
+}
+void sizeof_class()
+{
+	class C1
+	{
+		bool b1;
+		bool b2;
+		bool b3;
+		int i;
+	};
+	class C2
+	{
+		bool b1;
+		int i;
+		bool b2;
+	};
+	class C3
+	{
+		double f1(int) { cout << "do nothing"; return 1; };
+		double f2(int) { cout << "do nothing"; return 1; };
+		double f3(int) { cout << "do nothing"; return 1; };
+		double f4(int) { cout << "do nothing"; return 1; };
+		double f5(int) { cout << "do nothing"; return 1; };
+		double f6(int) { cout << "do nothing"; return 1; };
+		double f7(int) { cout << "do nothing"; return 1; };
+		double f8(int) { cout << "do nothing"; return 1; };
+		double f9(int) { cout << "do nothing"; return 1; };
+		double f10(int) { cout << "do nothing"; return 1; };
+	};
+	class C4
+	{
+		double f1(int) { cout << "do nothing"; return 1; };
+		bool b1;
+		bool b2;
+	};
+
+
+	C1 c1;
+	cout << "sizeof(c1) = " << sizeof(c1) << endl;
+	C2 c2;
+	cout << "sizeof(c2) = " << sizeof(c2) << endl;
+	C3 c3;
+	cout << "sizeof(c3) = " << sizeof(c3) << endl;
+	C4 c4;
+	cout << "sizeof(c4) = " << sizeof(c4) << endl;
+
 }
 void operators_redefinition()
 {
@@ -454,13 +510,20 @@ void remove_sort()
 	sort(v.begin(), v.end());
 	cout << "std::sort___________________\n" << v;
 	sort(v.begin(), v.end(), std::greater<>());
-	cout << "std::sort std::greater<>()__\n" << v;
+	cout << "std::sort std::greater<>()____\n" << v;
 	sort(v.begin(), v.end(), std::less<>());
-	cout << "std::sort std::less<>()_____\n" << v;
+	cout << "std::sort std::less<>()_______\n" << v;
 	sort(v.rbegin(), v.rend(), std::less<>());
-	cout << "std::sort reverse std::less<>()_____\n" << v;
+	cout << "std::sort reverse std::less<>()_\n" << v;
 	sort(v.rbegin(), v.rend(), [](int a, int b) {return a > b; });
-	cout << "std::sort reverse return a < b______\n" << v;
+	cout << "std::sort reverse return a < b_\n" << v;
+	for (int i{}; i < (v.size() - 1); ++i)
+		for (int j = i + 1; j < v.size(); ++j)
+		{
+			if (v[i] < v[j])
+				std::swap(v[i], v[j]);
+		}
+	cout << "bubble________________________\n" << v;
 
 	cout << "\n\n";
 	cout << " original___________________\n" << v2; // ostream << перегружен для vector
@@ -472,6 +535,10 @@ void remove_sort()
 	it = remove(v2.begin(), v2.end(), 24); v2.erase(it, v2.end());
 	v2.erase(remove(v2.begin(), v2.end(), 46), v2.end());
 	cout << "std::remove________24,46____\n" << v2;
+	v2.erase(v2.begin()+1);
+	cout << "erase begin()+1\n" << v2;
+	//next(v.begin(), 1)
+
 }
 void mutexLock()
 {
@@ -483,12 +550,12 @@ void mutexLock()
 	cout << "start 1 обычные переменные\n";
 	for (int i = 0; i < 10; ++i)
 	{
-		for (auto &elem:funcs)
-			thr.emplace_back(elem,i);
+		for (auto& elem : funcs)
+			thr.emplace_back(elem, i);
 	}
 	for (auto& elem : thr)
 		elem.join();
-	thr.clear(); 
+	thr.clear();
 	funcs.clear();
 	funcs.emplace_back(atomicFlag1); funcs.emplace_back(atomicFlag2);
 	cout << "\nend 1\n\n";
@@ -536,7 +603,7 @@ void atomic()
 	std::vector<std::thread> thr;
 	cleardata();
 	for (int i = 0; i < 10; ++i)
-			thr.emplace_back(fvalatile);
+		thr.emplace_back(fvalatile);
 	for (auto& elem : thr)
 		elem.join();
 	thr.clear();
@@ -547,12 +614,12 @@ void atomic()
 		elem.join();
 	thr.clear();
 	cout << "\nсчетчик atomic _count = " << _count << "\n\n";
-	cout << "компилятор ";  
+	cout << "компилятор ";
 	if (_count == count) cout << "не ";
 	cout << "оптимизировал выполнение функций\n";
-	cout << "разница между счетчиками равна " << _count - count; 
+	cout << "разница между счетчиками равна " << _count - count;
 
-	_count == count ? cout << "\nДЛЯ ДЕМОНСТРАЦИИ СВОЙСТВ atomic ПЕРЕЗАПУСТИТЕ ПРОГРАММУ" << endl:
+	_count == count ? cout << "\nДЛЯ ДЕМОНСТРАЦИИ СВОЙСТВ atomic ПЕРЕЗАПУСТИТЕ ПРОГРАММУ" << endl :
 		cout << " !!!" << endl;
 
 }
@@ -573,7 +640,7 @@ void asyncTasks()
 		cout << "длина_" << ++count << "=" << qu.front().get() << endl;
 		qu.pop();
 	}
-	cout <<"\n\n_____std::launch::async______\n\n";
+	cout << "\n\n_____std::launch::async______\n\n";
 	qu.push(std::async(std::launch::async, func, "*1Каждый "));
 	qu.push(std::async(std::launch::async, func, "*2охотник "));
 	qu.push(std::async(std::launch::async, func, "*3желает "));
@@ -582,12 +649,12 @@ void asyncTasks()
 	qu.push(std::async(std::launch::async, func, "*6сидит "));
 	qu.push(std::async(std::launch::async, func, "*7фазан "));
 	{ int count{};
-		while (!qu.empty())
-		{
-			qu.front().wait();
-			cout << "длина_" << ++count << "=" << qu.front().get() << endl;
-			qu.pop();
-		}
+	while (!qu.empty())
+	{
+		qu.front().wait();
+		cout << "длина_" << ++count << "=" << qu.front().get() << endl;
+		qu.pop();
+	}
 	}
 }
 void timer()
@@ -597,17 +664,17 @@ void timer()
 	int (*lambda1) (const char* part1, const char* part2) =
 		[](const char* part1, const char* part2)->int {cout << part1 << part2; return 10000; };
 	void (*lambda2) (const char* part1, const char* part2) =
-		[](const char* part1, const char* part2)  {cout << part1 << part2; };
+		[](const char* part1, const char* part2) {cout << part1 << part2; };
 
 	cout << "установлен таймер1 функция возвращает значение \n";
-	OnTimer <int> _timer1(3000, lambda1, s1,s2);
+	OnTimer <int> _timer1(3000, lambda1, s1, s2);
 	for (int i{}; i < 7; ++i)
 	{
 		cout << i << endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 	}
 	while (!_timer1.IsReady());
-	cout <<"функция вернула значение: " << _timer1.GetResult() << endl << endl;
+	cout << "функция вернула значение: " << _timer1.GetResult() << endl << endl;
 
 	cout << "установлен таймер2 функция типа void \n";
 	OnTimer _timer2(3000, lambda2, s1, s2);
@@ -625,7 +692,7 @@ void islands()
 		for (int c{}; c < size_col; ++c)
 		{
 			if (test_mass[r][c]) cout << "G ";
-			else cout <<  "_ ";
+			else cout << "_ ";
 		}
 		cout << endl;
 	}
@@ -635,9 +702,9 @@ void islands()
 	cout << "найдено " << isle.GetIslandsNum() << " островков в статическом массиве\n";
 	// динамический массив
 	unsigned char** test_dynamicmass;
-//	int size_row = 17, size_col = 20;
+	//	int size_row = 17, size_col = 20;
 	test_dynamicmass = new unsigned char* [size_row];
-	if (!test_dynamicmass) {cout << "ошибка создания динамического массива в islands()\n"; return;};
+	if (!test_dynamicmass) { cout << "ошибка создания динамического массива в islands()\n"; return; };
 	for (int r = 0; r < size_row; ++r)
 		test_dynamicmass[r] = new unsigned char[size_col];
 	for (int r{}; r < size_row; ++r)
@@ -650,40 +717,40 @@ void islands()
 		delete[] test_dynamicmass[r];
 	delete[] test_dynamicmass;
 	// статический массив по указателю 1
-	unsigned char (*pointer_to_static)[17][20] = &test_mass;
+	unsigned char(*pointer_to_static)[17][20] = &test_mass;
 	Isle isle3(pointer_to_static);
 	cout << "найдено " << isle3.GetIslandsNum() << " островков в статическом массиве по указателю unsigned char (*pointer_to_static)[17][20] = &test_mass \n";
 	// статический массив по указателю 2
-	unsigned char(*pointer_to_static2) [20] = test_mass;
+	unsigned char(*pointer_to_static2)[20] = test_mass;
 	Isle isle4(pointer_to_static2, size_row);
 	cout << "найдено " << isle4.GetIslandsNum() << " островков в статическом массиве по указателю unsigned char (*pointer_to_static2)[20] = test_mass;\n";
 }
 void mazeGuide()
 {
-	MazeGuide mazeguide(test_maze, {0,0}, {16,14});
-	auto path= mazeguide.FindExit();
+	MazeGuide mazeguide(test_maze, { 0,0 }, { 16,14 });
+	auto path = mazeguide.FindExit();
 	mazeguide.ShowMaze();
-	cout <<endl<< path.size()<< endl;
+	cout << endl << path.size() << endl;
 
 	if (!path.empty());
-	for (int i{};i<path.size(); ++i)
+	for (int i{}; i < path.size(); ++i)
 	{
 		cout << path[i].first << ", " << path[i].second << " | ";
-		if (i&&!(i % 10))cout << "\n";
+		if (i && !(i % 10))cout << "\n";
 	}
 }
 void GetSetProperty()
 {
 	Proper test_property;
 	test_property.field_property = 10;
-	cout <<"test_property.my_property= " << test_property.field_property <<endl;
+	cout << "test_property.my_property= " << test_property.field_property << endl;
 
 	test_property.mass_property[0][0] = 1;
 	test_property.mass_property[0][1] = 2;
 	test_property.mass_property[1][0] = 3;
 	test_property.mass_property[1][1] = 4;
 
-	cout << "test_property.mass_property= \n" << test_property.mass_property[0][0] <<"  " 
-		<< test_property.mass_property[0][1] <<  endl<< test_property.mass_property[1][0] << "  "
+	cout << "test_property.mass_property= \n" << test_property.mass_property[0][0] << "  "
+		<< test_property.mass_property[0][1] << endl << test_property.mass_property[1][0] << "  "
 		<< test_property.mass_property[1][1] << endl;
 }
