@@ -23,6 +23,7 @@
 #include "Islands.h"
 #include "MazeGuide.h"
 #include "property.h"
+#include "Converting.h"
 
 
 using std::cout;
@@ -34,6 +35,9 @@ extern int ei;
 int ei{};
 size_t A::counter; // инициализация статического поля класса A (описан в  "Header.h")
 thread_local int tli;
+
+
+
 
 void initionalizer();
 void thread_local_variable();
@@ -54,10 +58,14 @@ void timer();
 void islands();
 void mazeGuide();
 void GetSetProperty();
+void Converting();
+
+
 
 int main()
 {
 	setlocale(LC_ALL, "Rus");
+
 	////
 	//// инициализация, виды инициализации нулем
 	// initionalizer();
@@ -127,6 +135,9 @@ int main()
 	//cout << mb.size()<< "   "<< sizeof (mb) << endl;
 	//std::map<int, int> mi = { {1,2},{3,4},{5,0} };
 	//cout << mi.size() << "   " << sizeof(mi) << endl;
+	//// демонстрация конвертации типов
+	Converting();
+	//cout << "Converting() end\n\n";
 
 	cout << "\n\n"; system("pause");
 }
@@ -753,4 +764,10 @@ void GetSetProperty()
 	cout << "test_property.mass_property= \n" << test_property.mass_property[0][0] << "  "
 		<< test_property.mass_property[0][1] << endl << test_property.mass_property[1][0] << "  "
 		<< test_property.mass_property[1][1] << endl;
+}
+void Converting()
+{
+	cout << "вызывается функция convert(1.999f, 2),  которая вызывает одну из перегрузок iFC(int&&) или iFC(float&&)" << endl<<
+		"первый вариант для кажлого параметра вызывает функцию iFC (x), второй вариант использует forward"<<endl;
+	convert(1.999f, 2);
 }

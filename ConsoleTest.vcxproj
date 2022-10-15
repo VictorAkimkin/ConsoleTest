@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="atomic_demo.h" />
     <ClInclude Include="Calc.h" />
+    <ClInclude Include="Converting.h" />
     <ClInclude Include="futureAsync.h" />
     <ClInclude Include="HashTable.h" />
     <ClInclude Include="Header.h" />
