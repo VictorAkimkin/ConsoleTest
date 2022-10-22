@@ -12,10 +12,10 @@ std::ostream& operator<<(std::ostream& out, std::vector<T>& vec)
 	if (!vec.empty())out << std::endl;
 	return out;
 }
-struct A // класс для тестирования выделения памяти
+struct TestMemoryAllocationClass // класс для тестирования выделения памяти
 {
-	A() { std::cout << "Constructor A #" << ++counter << "\n"; }
-	~A() { std::cout << "Destructor  A #" << counter-- << "\n"; }
+	TestMemoryAllocationClass() { std::cout << "Constructor TestMemoryAllocationClass #" << ++counter << "\n"; }
+	~TestMemoryAllocationClass() { std::cout << "Destructor  TestMemoryAllocationClass #" << counter-- << "\n"; }
 	static size_t GetCounter() { return counter; }
 private:
 	static size_t counter;

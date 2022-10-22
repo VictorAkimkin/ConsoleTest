@@ -10,6 +10,9 @@
 #include <queue>
 #include <future>
 #include <chrono>
+#include <random>
+#include <regex>
+
 
 #include "Header.h"
 #include "MyMath.h"
@@ -33,16 +36,14 @@ int global1;
 double  global2;
 extern int ei;
 int ei{};
-size_t A::counter; // инициализация статического поля класса A (описан в  "Header.h")
+size_t TestMemoryAllocationClass::counter; // инициализация статического поля класса (класс описан в "Header.h")
 thread_local int tli;
-
-
 
 
 void initionalizer();
 void thread_local_variable();
 void rhombshaped_heritage();
-void rhombshaped_heritage_callordering();
+void rhombshaped_heritage_call_ordering();
 void sizeof_class();
 void operators_redefinition();
 void hashTable();
@@ -51,6 +52,7 @@ void memory_allocation1();
 void memory_allocation2();
 void swaping();
 void remove_sort();
+void replace_substring();
 void mutexLock();
 void atomic();
 void asyncTasks();
@@ -60,11 +62,13 @@ void mazeGuide();
 void GetSetProperty();
 void Converting();
 
-
+ 
 
 int main()
 {
-	setlocale(LC_ALL, "Rus");
+	setlocale(LC_ALL,"RU");
+ 
+
 
 	////
 	//// инициализация, виды инициализации нулем
@@ -77,7 +81,7 @@ int main()
 	 ////
 	//// ромбовидное наследование: класс наследник от двух классов с общим предком
 	//rhombshaped_heritage();
-	//rhombshaped_heritage_callordering();//порядок вызова конструкторов/деструкторов и обязательность вирульаного деструктора
+	//rhombshaped_heritage_call_ordering();//порядок вызова конструкторов/деструкторов и обязательность вирульаного деструктора
 	// cout << "rhombshaped_heritage() end \n\n";
 	//// 
 	//// размеры экземпларов класса в зависимости от порядка полей класса
@@ -108,6 +112,10 @@ int main()
 	//remove_sort();
 	// cout << "remove_sort() end\n\n";
 	////
+	//// сортировка и удаление элементов контейнера
+	replace_substring();
+	// cout << "replace_substring() end\n\n";
+	//// 
 	//// захват мьютекса
 	//mutexLock();
 	//cout << "mutexLock() end\n\n";
@@ -136,7 +144,7 @@ int main()
 	//std::map<int, int> mi = { {1,2},{3,4},{5,0} };
 	//cout << mi.size() << "   " << sizeof(mi) << endl;
 	//// демонстрация конвертации типов
-	Converting();
+	//Converting();
 	//cout << "Converting() end\n\n";
 
 	cout << "\n\n"; system("pause");
@@ -162,21 +170,30 @@ void initionalizer()
 	int intmas[5] = { 3,4 };
 	std::string str; str.resize(5);
 	// ----------------------------------------------------------------
-	void (*fu)(un&, int) = [](un& u, int num) {cout << "  u" << num << ":  a= " << u.a << "  b= " << u.b << "  c= " << u.c << " \n"; };
+	void (*fu)(un&, int) = [](un& u, int num) {cout << "  u" << num << ":  a= " << u.a << "  b= " << u.b << "  c= " << u.c << "\n"; };
 	fu(u1, 1); fu(u2, 2); fu(u3, 3);
-	auto f = [](st& s, int num) {cout << "  s" << num << ":  a= " << s.a << "  b= " << s.b << "  c= " << s.c << " \n"; };
+	auto f = [](st& s, int num) {cout << "  s" << num << ":  a= " << s.a << "  b= " << s.b << "  c= " << s.c << "\n"; };
 	f(s1, 1); f(s2, 2); f(s3, 3); f(s4, 4); f(s5, 5); f(s6, 6);
-	cout << "  global1 : " << global1 << " \n";
-	cout << "  global2 : " << global2 << " \n";
-	cout << "  static int si : " << si << " \n";
-	cout << "  extern int ei : " << ei << " \n";
-	cout << "  thread_local double tld : " << si << " \n";
+	cout << "  global1 : " << global1 << "\n";
+	cout << "  global2 : " << global2 << "\n";
+	cout << "  static int si : " << si << "\n";
+	cout << "  extern int ei : " << ei << "\n";
+	cout << "  thread_local double tld : " << si << "\n";
 	for (int i{}; i < sizeof(ch); ++i)
-		cout << "  ch[" << i << "] = " << ch[i] << " \n";
+		cout << "  ch[" << i << "] = " << ch[i] << "\n";
 	for (int i{}; i < sizeof(intmas) / sizeof(int); ++i)
-		cout << "  intmas[" << i << "] = " << intmas[i] << " \n";
+		cout << "  intmas[" << i << "] = " << intmas[i] << "\n";
 	for (int i{}; i < str.size(); ++i)
-		cout << "  str[" << i << "] = " << str[i] << " \n";
+		cout << "  str[" << i << "] = " << str[i] << "\n";
+
+
+	int m[]={1, 2, 3};
+	auto& [x, y, z] = m;   	
+	cout << "int m[]={1,2,3}; auto& [x,y,z]=m;" << "\n";
+	cout << "x= " << x << "  y= " << y << "  z= " << z << "\n";
+	auto [x1, y1,z1] = s5;
+	cout << "auto [x1, y1,z1] = s5;" << "\n";
+	cout << "x1= " << x1 << "  y1= " << y1 << "  z1= " << z1 << "\n";
 }
 void thread_local_variable()
 {
@@ -216,7 +233,7 @@ void rhombshaped_heritage()
 	cout << "MyMath c2(4,5); c2.sumXY()= " << c2.sumXY();
 	cout << "\n";
 }
-void rhombshaped_heritage_callordering()
+void rhombshaped_heritage_call_ordering()
 {
 	// виртуальный деструктор базового класса обязателен при использоваии указателя на базывый класс хранящий объект потомка
 	Calc* c1 = new MyMath(2, 3);       std::cout << "\n\n\n";
@@ -372,17 +389,18 @@ void variadic_template()
 }
 void memory_allocation1()
 {
-	A* massA = (A*)malloc(sizeof(A));
+	using TMAC = TestMemoryAllocationClass;
+	TMAC* massA = (TMAC*)malloc(sizeof(TMAC));
 	assert(("malloc Error", massA));
-	new (massA) A;
+	new (massA) TMAC;
 	std::function<void(int)> destructor = [&](int index) // объявляем как std::function для возможности рекурсии
 	{
-		if (!A::GetCounter() || index >= A::GetCounter()) return;
-		for (int i = A::GetCounter() - 1; i >= index; --i)
-			(massA + i)->~A();
+		if (!TMAC::GetCounter() || index >= TMAC::GetCounter()) return;
+		for (int i = TMAC::GetCounter() - 1; i >= index; --i)
+			(massA + i)->~TMAC();
 		if (index)
 		{
-			A* tmpptr = (A*)realloc(massA, sizeof(A) * index);
+			TMAC* tmpptr = (TMAC*)realloc(massA, sizeof(TMAC) * index);
 			if (!tmpptr) { destructor(0); exit(1); }
 			massA = tmpptr;
 		}
@@ -393,27 +411,27 @@ void memory_allocation1()
 		int size;
 		do
 		{
-			cout << "Текущий размер массива объектов А = " << A::GetCounter() << ".\n          Введите новый размер (от 1 до 5) массива объектов  А\n";
+			cout << "Текущий размер массива объектов Класса = " << TMAC::GetCounter() << ".\n          Введите новый размер (от 1 до 5) массива объектов  Класса\n";
 			std::cin >> size;
 			if (!std::cin.good()) // защита от некорректного ввода
 			{
 				std::cin.clear(); std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 			}
 		} while (size < 1 || size > 5);
-		if (size > A::GetCounter())
+		if (size > TMAC::GetCounter())
 		{
-			A* tmpptr = (A*)realloc(massA, sizeof(A) * size);
+			TMAC* tmpptr = (TMAC*)realloc(massA, sizeof(TMAC) * size);
 			if (!tmpptr) { destructor(0); exit(1); }
 			massA = tmpptr;
-			for (int j = A::GetCounter(); j < size; ++j) new (massA + j) A;
+			for (int j = TMAC::GetCounter(); j < size; ++j) new (massA + j) TMAC;
 		}
 		else
 		{
-			if (size < A::GetCounter())
+			if (size < TMAC::GetCounter())
 			{
 				destructor(size);
 			}
-			else cout << "Новый размер массива объектов А равен текущему размеру. Перераспределение памяти не произведено\n\n";
+			else cout << "Новый размер массива объектов Класса равен текущему размеру. Перераспределение памяти не произведено\n\n";
 		}
 	}
 	cout << "\nОчищаем память\n";
@@ -422,19 +440,20 @@ void memory_allocation1()
 }
 void memory_allocation2()
 {
+	using TMAC = TestMemoryAllocationClass;
 	const int subMassSize = 5;
-	A** massA = (A**)malloc(sizeof(A*));
+	TMAC** massA = (TMAC**)malloc(sizeof(TMAC*));
 	assert(("malloc Error", massA));
-	massA[0] = new A[subMassSize];
+	massA[0] = new TMAC[subMassSize];
 	std::function<void(int)> destructor = [&](int index) // объявляем как std::function для возможности рекурсии
 	{
-		int mass_counter = A::GetCounter() / subMassSize;
+		int mass_counter = TMAC::GetCounter() / subMassSize;
 		if (!mass_counter || index >= mass_counter) return;
 		for (int i = mass_counter; i > index; --i)
 			delete[] massA[i - 1];
 		if (index)
 		{
-			A** tmpptr = (A**)realloc(massA, sizeof(A*) * index);
+			TMAC** tmpptr = (TMAC**)realloc(massA, sizeof(TMAC*) * index);
 			if (!tmpptr) { destructor(0); exit(1); }
 			massA = tmpptr;
 		}
@@ -442,13 +461,13 @@ void memory_allocation2()
 	};
 	for (int i = 3; i; --i)
 	{
-		int mass_counter = A::GetCounter() / subMassSize;
+		int mass_counter = TMAC::GetCounter() / subMassSize;
 		int size;
 		do
 		{
-			cout << "Текущий размер массива массивов объектов А = " << mass_counter
-				<< "\nОбщее количество объектов = " << A::GetCounter()
-				<< ".\n          Введите новый размер (от 1 до 5) массива массивов объектов  А\n";
+			cout << "Текущий размер массива массивов объектов Класса = " << mass_counter
+				<< "\nОбщее количество объектов = " << TMAC::GetCounter()
+				<< ".\n          Введите новый размер (от 1 до 5) массива массивов объектов Класса\n";
 			std::cin >> size;
 			if (!std::cin.good()) // защита от некорректного ввода
 			{
@@ -457,10 +476,10 @@ void memory_allocation2()
 		} while (size < 1 || size > 5);
 		if (size > mass_counter)
 		{
-			A** tmpptr = (A**)realloc(massA, sizeof(A*) * size);
+			TMAC** tmpptr = (TMAC**)realloc(massA, sizeof(TMAC*) * size);
 			if (!tmpptr) { destructor(0); exit(1); }
 			massA = tmpptr;
-			for (int j = mass_counter; j < size; ++j)	massA[j] = new A[subMassSize];
+			for (int j = mass_counter; j < size; ++j)	massA[j] = new TMAC[subMassSize];
 		}
 		else
 		{
@@ -468,7 +487,7 @@ void memory_allocation2()
 			{
 				destructor(size);
 			}
-			else  cout << "Новый размер массива объектов А равен текущему размеру. Перераспределение памяти не произведено\n\n";
+			else  cout << "Новый размер массива объектов Класса равен текущему размеру. Перераспределение памяти не произведено\n\n";
 		}
 	}
 	cout << "\nОчищаем память\n";
@@ -550,6 +569,23 @@ void remove_sort()
 	cout << "erase begin()+1\n" << v2;
 	//next(v.begin(), 1)
 
+}
+void replace_substring()
+{
+	std::string s = "SDFJHDSKJFHKHDAHDAKAJSDH";
+	std::string old_s = "S";
+	std::string new_s = "-\"S\"-";
+	std::regex r_replace("D|F|J|H|K|A");
+	std::regex r_char_replace(std::string{'S'});
+
+	cout <<"Первоначальная строка:\n" << s << "\n\n";
+	for (size_t pos{}; s.npos != (pos = s.find(old_s.data(), pos, old_s.length())); pos += new_s.length())
+		s.replace(pos, old_s.length(), new_s.data(), new_s.length());
+	cout << "Измененая строка 1:\n" << s << "\n\n";
+
+	cout << "Измененая строка 2:\n" << std::regex_replace(s, r_replace, "_") << "\n\n";
+	s = std::regex_replace(s, r_char_replace, " [$&] ");
+	cout << "Измененая строка 3:\n" << std::regex_replace(s, r_replace, "*") << "\n\n";
 }
 void mutexLock()
 {
